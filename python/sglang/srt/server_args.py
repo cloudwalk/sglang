@@ -851,6 +851,7 @@ class ServerArgs:
         self._handle_multimodal()
         # Validate SSL arguments early (before dummy-model short-circuit).
         self._handle_ssl_validation()
+        self._handle_grpc_args()
 
         # Validate PD disaggregation flags early (before dummy-model short-circuit).
         self._handle_pd_disaggregation()
@@ -1077,36 +1078,6 @@ class ServerArgs:
                     "Multi-worker HTTP/2 support will be added in a future release."
                 )
 
-        # SGLANG_ENABLE_GRPC=1 enrollment must be picked up before this guard,
-        # otherwise the env-only path bypasses the multi-tokenizer check (and
-        # the later checks in _handle_deprecated_args). Mirror the same merge
-        # logic; _handle_deprecated_args is idempotent on these fields.
-        if not self.enable_grpc and envs.SGLANG_ENABLE_GRPC.get():
-            self.enable_grpc = True
-
-        legacy_grpc_requested = self.smg_grpc or self.grpc_mode
-        native_grpc_requested = (
-            self.enable_grpc
-            and not legacy_grpc_requested
-            and not self.use_ray
-            and not self.encoder_only
-            and importlib.util.find_spec("sglang.srt.grpc._core") is not None
-        )
-        if native_grpc_requested and self.tokenizer_worker_num > 1:
-            raise ValueError(
-                "Native gRPC does not yet support --tokenizer-worker-num > 1. "
-                "Unset --enable-grpc or set --tokenizer-worker-num 1."
-            )
-        # api_key middleware is a FastAPI add-on; the native gRPC listener
-        # bypasses it. Reject the combination until the Rust side gains an
-        # auth interceptor.
-        if native_grpc_requested and (self.api_key or self.admin_api_key):
-            raise ValueError(
-                "--enable-grpc is incompatible with --api-key/--admin-api-key: "
-                "the native gRPC listener bypasses HTTP auth middleware. "
-                "Unset --enable-grpc or remove the api-key flags."
-            )
-
     def _handle_multimodal(self):
         """Validate mm_process_config structure before model loading."""
         if self.mm_process_config is not None:
@@ -1123,6 +1094,28 @@ class ServerArgs:
                         f"mm_process_config['{key}'] must be a dict, "
                         f"but got {type(self.mm_process_config[key])}"
                     )
+
+    def _handle_grpc_args(self):
+        self._apply_grpc_env_fallbacks()
+
+        legacy_grpc_requested = self.smg_grpc or self.grpc_mode
+        native_grpc_requested = (
+            self.enable_grpc
+            and not legacy_grpc_requested
+            and not self.use_ray
+            and not self.encoder_only
+        )
+        if native_grpc_requested and self.tokenizer_worker_num > 1:
+            raise ValueError(
+                "Native gRPC does not yet support --tokenizer-worker-num > 1. "
+                "Unset --enable-grpc or set --tokenizer-worker-num 1."
+            )
+        if native_grpc_requested and (self.api_key or self.admin_api_key):
+            raise ValueError(
+                "--enable-grpc is incompatible with --api-key/--admin-api-key: "
+                "the native gRPC listener bypasses HTTP auth middleware. "
+                "Unset --enable-grpc or remove the api-key flags."
+            )
 
     def _handle_deprecated_args(self):
         # Handle deprecated tool call parsers
@@ -1167,17 +1160,8 @@ class ServerArgs:
             )
             self.smg_grpc = True
 
-        # Env var fallbacks for gRPC flags (backwards compat with env-only phase).
-        if not self.enable_grpc and envs.SGLANG_ENABLE_GRPC.get():
-            self.enable_grpc = True
-        grpc_port_env = envs.SGLANG_GRPC_PORT.get()
-        if self.grpc_port is None and grpc_port_env is not None:
-            self.grpc_port = grpc_port_env
+        self._apply_grpc_env_fallbacks()
 
-        # Only derive a default grpc_port (and validate it) when gRPC is
-        # actually in use. HTTP-only launches on high ports (e.g. --port 56000)
-        # would otherwise fail validation because port+10000 falls outside
-        # the valid range — even though nothing will ever listen on it.
         grpc_in_use = self.enable_grpc or self.smg_grpc or self.grpc_mode
         if grpc_in_use:
             if self.grpc_port is None:
@@ -1188,6 +1172,13 @@ class ServerArgs:
                 )
             if self.grpc_worker_threads < 1:
                 raise ValueError("--grpc-worker-threads must be >= 1")
+
+    def _apply_grpc_env_fallbacks(self):
+        if not self.enable_grpc and envs.SGLANG_ENABLE_GRPC.get():
+            self.enable_grpc = True
+        grpc_port_env = envs.SGLANG_GRPC_PORT.get()
+        if self.grpc_port is None and grpc_port_env is not None:
+            self.grpc_port = grpc_port_env
 
     def _handle_prefill_delayer_env_compat(self):
         if envs.SGLANG_SCHEDULER_DECREASE_PREFILL_IDLE.get():

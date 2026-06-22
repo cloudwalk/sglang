@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 from sglang.srt.arg_groups.speculative_hook import handle_speculative_decoding
+from sglang.srt.environ import envs
 from sglang.srt.server_args import PortArgs, ServerArgs, prepare_server_args
 from sglang.test.ci.ci_register import register_cpu_ci
 from sglang.test.test_utils import (
@@ -85,6 +86,29 @@ class TestLoadBalanceMethod(unittest.TestCase):
 
         self.assertIn("('nixl', 'mooncake')", str(context.exception))
         self.assertIn("'fake'", str(context.exception))
+
+
+class TestGrpcServerArgs(CustomTestCase):
+    def test_env_enabled_grpc_rejects_multi_tokenizer(self):
+        server_args = ServerArgs(model_path="dummy", tokenizer_worker_num=2)
+
+        with envs.SGLANG_ENABLE_GRPC.override(True):
+            with self.assertRaisesRegex(ValueError, "tokenizer-worker-num > 1"):
+                server_args._handle_grpc_args()
+
+    def test_env_enabled_grpc_rejects_http_auth(self):
+        server_args = ServerArgs(model_path="dummy", api_key="secret")
+
+        with envs.SGLANG_ENABLE_GRPC.override(True):
+            with self.assertRaisesRegex(ValueError, "incompatible with --api-key"):
+                server_args._handle_grpc_args()
+
+    def test_http_only_high_port_does_not_derive_grpc_port(self):
+        server_args = ServerArgs(model_path="dummy", port=56000)
+
+        server_args._handle_deprecated_args()
+
+        self.assertIsNone(server_args.grpc_port)
 
 
 class TestPortArgs(unittest.TestCase):

@@ -377,9 +377,6 @@ async def lifespan(fast_api_app: FastAPI):
         traceback = get_exception_traceback()
         logger.warning(f"Can not initialize OpenAIServingResponses, error: {traceback}")
 
-    # Start the native gRPC sidecar from the lifespan so it inherits the
-    # already-running HTTP event loop. Skip multi-tokenizer-worker mode
-    # because every worker would try to bind the same gRPC port.
     in_grpc_capable_worker = (
         getattr(fast_api_app, "is_single_tokenizer_mode", False)
         or envs.SGLANG_GRANIAN_PARENT_PID.get() is not None
@@ -2336,13 +2333,6 @@ def _start_native_grpc_server_for_runtime(
     template_manager,
     scheduler_info,
 ):
-    """Start the native Rust gRPC server for a live runtime.
-
-    Returns a GrpcServerHandle. Raises on any failure (missing extension,
-    port bind error, runtime error) — the caller asked for --enable-grpc
-    explicitly, so silently leaving HTTP healthy with gRPC missing would
-    surprise the operator.
-    """
     try:
         from sglang.srt.entrypoints.grpc_bridge import RuntimeHandle
         from sglang.srt.grpc import _core as grpc_native
@@ -2420,11 +2410,6 @@ def launch_server(
         run_detokenizer_process_func=run_detokenizer_process_func,
     )
 
-    # Native gRPC sidecar startup lives in the FastAPI lifespan so it
-    # inherits uvicorn/Granian's already-running event loop. The bridge's
-    # run_coroutine_threadsafe schedules onto that loop; starting gRPC
-    # before uvicorn (as we used to here) created a stale loop that
-    # nothing drove, causing every async gRPC RPC to hang.
     _setup_and_run_http_server(
         server_args,
         tokenizer_manager,
