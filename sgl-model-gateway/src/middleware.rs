@@ -46,6 +46,43 @@ use crate::{
     },
 };
 
+/// RAII guard for an in-flight permit. Returns the token on drop unless
+/// disarmed, so the permit is never leaked if the request future is dropped
+/// before the body guard is installed. `disarm()` hands ownership to
+/// [`TokenGuardBody`].
+struct InflightPermit {
+    bucket: Option<Arc<TokenBucket>>,
+    tokens: f64,
+}
+
+impl InflightPermit {
+    fn new(bucket: Arc<TokenBucket>, tokens: f64) -> Self {
+        Self {
+            bucket: Some(bucket),
+            tokens,
+        }
+    }
+
+    /// Take ownership of the bucket so `Drop` becomes a no-op. The caller
+    /// (typically [`TokenGuardBody`]) is now responsible for returning the
+    /// token when the stream ends.
+    fn disarm(mut self) -> Arc<TokenBucket> {
+        self.bucket
+            .take()
+            .expect("disarm called twice on the same InflightPermit")
+    }
+}
+
+impl Drop for InflightPermit {
+    fn drop(&mut self) {
+        if let Some(bucket) = self.bucket.take() {
+            // Cancelled between permit acquire and body-guard install
+            // (e.g. client disconnect). Return it so the semaphore drains.
+            bucket.return_tokens_sync(self.tokens);
+        }
+    }
+}
+
 /// A body wrapper that holds a token and returns it when the body is fully consumed or dropped.
 /// This ensures that for streaming responses, the token is only returned after the entire
 /// stream has been sent to the client.
@@ -489,20 +526,28 @@ impl ConcurrencyLimiter {
     }
 }
 
-/// Middleware function for concurrency limiting with optional queuing
+/// Concurrency limiting middleware. Gates in order: mesh global rate
+/// limit -> local req/s bucket (+ optional queue) -> in-flight cap
+/// (`max_inflight_requests`). The in-flight permit is acquired only after a
+/// req/s token is granted (so queued requests hold no in-flight slot) and is
+/// returned when the response body stream ends.
 pub async fn concurrency_limit_middleware(
     State(app_state): State<Arc<AppState>>,
     request: Request<Body>,
     next: Next,
 ) -> Response {
-    // Check mesh global rate limit first if mesh is enabled
-    // If mesh is not enabled, this check is skipped and local rate limiting is used
+    // 1. Check mesh global rate limit first if mesh is enabled.
+    //    If mesh is not enabled, this check is skipped and local rate limiting is used.
     if let Some(sync_manager) = &app_state.mesh_sync_manager {
         let (is_exceeded, current_count, limit) = sync_manager.check_global_rate_limit();
         if is_exceeded {
             debug!(
                 "Global rate limit exceeded: {}/{} req/s",
                 current_count, limit
+            );
+            Metrics::record_http_rate_limit(
+                metrics_labels::RATE_LIMIT_REJECTED,
+                metrics_labels::LIMITER_MESH,
             );
             return (
                 StatusCode::TOO_MANY_REQUESTS,
@@ -516,11 +561,22 @@ pub async fn concurrency_limit_middleware(
         }
     }
 
+    let inflight_bucket = app_state.context.inflight_limiter.clone();
+    rate_limit_response(&app_state, request, next, inflight_bucket).await
+}
+
+/// req/s token bucket (`max_concurrent_requests`) + optional queue, then the
+/// in-flight cap. `max_concurrent_requests <= 0` skips the req/s bucket.
+async fn rate_limit_response(
+    app_state: &AppState,
+    request: Request<Body>,
+    next: Next,
+    inflight_bucket: Option<Arc<TokenBucket>>,
+) -> Response {
     let token_bucket = match &app_state.context.rate_limiter {
         Some(bucket) => bucket.clone(),
         None => {
-            // Rate limiting disabled, pass through immediately
-            return next.run(request).await;
+            return run_and_guard(request, next, None, inflight_bucket).await;
         }
     };
 
@@ -533,15 +589,7 @@ pub async fn concurrency_limit_middleware(
     // Try to acquire token immediately
     if token_bucket.try_acquire(1.0).await.is_ok() {
         debug!("Acquired token immediately");
-        Metrics::record_http_rate_limit(metrics_labels::RATE_LIMIT_ALLOWED);
-        let response = next.run(request).await;
-
-        // Wrap the response body with TokenGuardBody to return token when stream ends
-        // This ensures that for streaming responses, the token is only returned
-        // after the entire stream has been sent to the client.
-        let (parts, body) = response.into_parts();
-        let guarded_body = TokenGuardBody::new(body, token_bucket, 1.0);
-        Response::from_parts(parts, Body::new(guarded_body))
+        run_and_guard(request, next, Some(token_bucket), inflight_bucket).await
     } else {
         // No tokens available, try to queue if enabled
         if let Some(queue_tx) = &app_state.concurrency_queue_tx {
@@ -567,22 +615,25 @@ pub async fn concurrency_limit_middleware(
                     match permit_rx.await {
                         Ok(Ok(())) => {
                             debug!("Acquired token from queue");
-                            Metrics::record_http_rate_limit(metrics_labels::RATE_LIMIT_ALLOWED);
                             // Dequeue for embeddings
                             if is_embeddings {
                                 EMBEDDINGS_QUEUE_SIZE.fetch_sub(1, Ordering::Relaxed);
                             }
 
-                            let response = next.run(request).await;
-
-                            // Wrap the response body with TokenGuardBody to return token when stream ends
-                            let (parts, body) = response.into_parts();
-                            let guarded_body = TokenGuardBody::new(body, token_bucket, 1.0);
-                            Response::from_parts(parts, Body::new(guarded_body))
+                            run_and_guard(
+                                request,
+                                next,
+                                Some(token_bucket),
+                                inflight_bucket,
+                            )
+                            .await
                         }
                         Ok(Err(status)) => {
                             warn!("Queue returned error status: {}", status);
-                            Metrics::record_http_rate_limit(metrics_labels::RATE_LIMIT_REJECTED);
+                            Metrics::record_http_rate_limit(
+                                metrics_labels::RATE_LIMIT_REJECTED,
+                                metrics_labels::LIMITER_RATE,
+                            );
                             // Dequeue for embeddings on error
                             if is_embeddings {
                                 EMBEDDINGS_QUEUE_SIZE.fetch_sub(1, Ordering::Relaxed);
@@ -591,7 +642,10 @@ pub async fn concurrency_limit_middleware(
                         }
                         Err(_) => {
                             error!("Queue response channel closed");
-                            Metrics::record_http_rate_limit(metrics_labels::RATE_LIMIT_REJECTED);
+                            Metrics::record_http_rate_limit(
+                                metrics_labels::RATE_LIMIT_REJECTED,
+                                metrics_labels::LIMITER_RATE,
+                            );
                             // Dequeue for embeddings on channel error
                             if is_embeddings {
                                 EMBEDDINGS_QUEUE_SIZE.fetch_sub(1, Ordering::Relaxed);
@@ -602,16 +656,81 @@ pub async fn concurrency_limit_middleware(
                 }
                 Err(_) => {
                     warn!("Request queue is full, returning 429");
-                    Metrics::record_http_rate_limit(metrics_labels::RATE_LIMIT_REJECTED);
+                    Metrics::record_http_rate_limit(
+                        metrics_labels::RATE_LIMIT_REJECTED,
+                        metrics_labels::LIMITER_RATE,
+                    );
                     StatusCode::TOO_MANY_REQUESTS.into_response()
                 }
             }
         } else {
             warn!("No tokens available and queuing is disabled, returning 429");
-            Metrics::record_http_rate_limit(metrics_labels::RATE_LIMIT_REJECTED);
+            Metrics::record_http_rate_limit(
+                metrics_labels::RATE_LIMIT_REJECTED,
+                metrics_labels::LIMITER_RATE,
+            );
             StatusCode::TOO_MANY_REQUESTS.into_response()
         }
     }
+}
+
+/// Forward to the handler, acquiring the in-flight permit (a req/s token is
+/// already in hand). Wraps the body with the req/s guard (inner) and the
+/// in-flight guard (outer). On in-flight overflow the req/s token is
+/// released and a 429 is returned (the request never reaches the handler).
+async fn run_and_guard(
+    request: Request<Body>,
+    next: Next,
+    reqs_bucket: Option<Arc<TokenBucket>>,
+    inflight_bucket: Option<Arc<TokenBucket>>,
+) -> Response {
+    let inflight_permit = match &inflight_bucket {
+        Some(bucket) => match bucket.try_acquire(1.0).await {
+            Ok(()) => {
+                debug!("Acquired in-flight permit");
+                Some(InflightPermit::new(bucket.clone(), 1.0))
+            }
+            Err(()) => {
+                debug!(
+                    "In-flight cap exceeded (max_inflight_requests); returning 429"
+                );
+                Metrics::record_http_rate_limit(
+                    metrics_labels::RATE_LIMIT_REJECTED,
+                    metrics_labels::LIMITER_INFLIGHT,
+                );
+                if let Some(rb) = &reqs_bucket {
+                    rb.return_tokens_sync(1.0);
+                }
+                return StatusCode::TOO_MANY_REQUESTS.into_response();
+            }
+        },
+        None => None,
+    };
+
+    // Record `allowed` only when a req/s limiter exists; pure-inflight
+    // deployments have no rate-limit decision to record.
+    if reqs_bucket.is_some() {
+        Metrics::record_http_rate_limit(
+            metrics_labels::RATE_LIMIT_ALLOWED,
+            metrics_labels::LIMITER_RATE,
+        );
+    }
+
+    let response = next.run(request).await;
+
+    let (parts, body) = response.into_parts();
+    let body = match reqs_bucket {
+        Some(bucket) => Body::new(TokenGuardBody::new(body, bucket, 1.0)),
+        None => body,
+    };
+    let body = match inflight_permit {
+        Some(permit) => {
+            let bucket = permit.disarm();
+            Body::new(TokenGuardBody::new(body, bucket, 1.0))
+        }
+        None => body,
+    };
+    Response::from_parts(parts, body)
 }
 
 // ============================================================================
@@ -982,6 +1101,46 @@ pub async fn wasm_middleware(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn inflight_permit_returns_token_on_drop_when_not_disarmed() {
+        // Simulates the request future being dropped in the gap between
+        // acquiring the in-flight permit and installing TokenGuardBody
+        // (e.g. client disconnect). The RAII guard must return the token so
+        // the semaphore is never permanently exhausted.
+        let bucket = Arc::new(TokenBucket::new(1, 0));
+        assert!(bucket.try_acquire(1.0).await.is_ok(), "acquire succeeds");
+        assert!(
+            bucket.try_acquire(1.0).await.is_err(),
+            "semaphore now empty"
+        );
+
+        // Model the real path: the bucket already yielded a permit; the
+        // guard is responsible for returning it. Drop without disarming.
+        let permit = InflightPermit::new(bucket.clone(), 1.0);
+        drop(permit);
+
+        // Token returned on drop => the bucket is usable again (no leak).
+        assert!(
+            bucket.try_acquire(1.0).await.is_ok(),
+            "permit must be returned on drop (no leak)"
+        );
+    }
+
+    #[tokio::test]
+    async fn inflight_permit_disarm_does_not_return_token() {
+        // On the happy path the permit is disarmed (handed to TokenGuardBody);
+        // disarming must NOT return the token (TokenGuardBody owns it now).
+        let bucket = Arc::new(TokenBucket::new(1, 0));
+        assert!(bucket.try_acquire(1.0).await.is_ok());
+        let permit = InflightPermit::new(bucket.clone(), 1.0);
+        let _owned = permit.disarm();
+        // bucket still empty: disarm did not return the token
+        assert!(
+            bucket.try_acquire(1.0).await.is_err(),
+            "disarm must not return the token"
+        );
+    }
 
     #[test]
     fn test_normalize_path_no_ids() {

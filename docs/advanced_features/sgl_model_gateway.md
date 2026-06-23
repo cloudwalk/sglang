@@ -1575,8 +1575,8 @@ histogram_quantile(0.95, sum(rate(smg_router_generation_duration_seconds_bucket[
 
 **5. Rate Limiting and Queuing:**
 ```promql
-# Rate limit rejections
-sum(rate(smg_http_rate_limit_total{decision="rejected"}[5m]))
+# Rate limit rejections (by gate: rate, inflight, mesh)
+sum(rate(smg_http_rate_limit_total{result="rejected"}[5m])) by (limiter)
 
 # Queue depth (if using concurrency limiting)
 smg_worker_requests_active
