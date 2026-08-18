@@ -1073,7 +1073,7 @@ class NixlKVManager(CommonKVManager):
                 peer_info.dst_kv_layer_ids,
                 n_src,
                 n_dst,
-                allow_positional_fallback=self.pp_size == 1,
+                allow_positional_fallback=True,
             )
             dst_indices = [j for _, j in pairs]
             dst_kv_ptrs = [peer_info.dst_kv_ptrs[j] for j in dst_indices]
@@ -2065,7 +2065,7 @@ class NixlKVManager(CommonKVManager):
             dst_layer_ids or [],
             len(src_state_data_ptrs),
             len(dst_state_data_ptrs),
-            allow_positional_fallback=self.pp_size == 1,
+            allow_positional_fallback=True,
         )
         for i, j in pairs:
             dst_state_ptr = dst_state_data_ptrs[j]
@@ -2155,7 +2155,7 @@ class NixlKVManager(CommonKVManager):
             dst_layer_ids or [],
             len(src_state_data_ptrs),
             len(dst_state_data_ptrs),
-            allow_positional_fallback=self.pp_size == 1,
+            allow_positional_fallback=True,
         )
         for i, j in pairs:
             dst_state_ptr = dst_state_data_ptrs[j]
