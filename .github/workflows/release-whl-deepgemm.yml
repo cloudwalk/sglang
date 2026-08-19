@@ -53,10 +53,10 @@ jobs:
           docker run --rm -v "${{ github.workspace }}:/workspace" alpine:3 \
             sh -c 'rm -rf /workspace/..?* /workspace/.[!.]* /workspace/*' || true
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Checkout DeepGEMM
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: sgl-project/DeepGEMM
           ref: ${{ inputs.branch || 'dev' }}
@@ -74,7 +74,7 @@ jobs:
           ./scripts/build_sgl_deep_gemm.sh "${{ matrix.python-version }}" "${{ matrix.cuda-version }}" "${{ github.workspace }}/DeepGEMM" "${{ matrix.arch }}"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: deepgemm-wheel-cuda${{ matrix.cuda-version }}-${{ matrix.arch }}
           path: DeepGEMM/dist/*.whl
@@ -94,10 +94,10 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Checkout DeepGEMM
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: sgl-project/DeepGEMM
           ref: ${{ inputs.branch || 'dev' }}
@@ -105,7 +105,7 @@ jobs:
           submodules: recursive
 
       - name: Download wheel
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: dist/
           merge-multiple: true
@@ -132,17 +132,17 @@ jobs:
     needs: [build-cu129-matrix, test-cu129]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: dist/
           merge-multiple: true
           pattern: deepgemm-wheel-cuda12.9-*
 
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
         with:
           tag_name: v${{ inputs.version }}
           repository: sgl-project/whl
@@ -188,10 +188,10 @@ jobs:
           docker run --rm -v "${{ github.workspace }}:/workspace" alpine:3 \
             sh -c 'rm -rf /workspace/..?* /workspace/.[!.]* /workspace/*' || true
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Checkout DeepGEMM
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: sgl-project/DeepGEMM
           ref: ${{ inputs.branch || 'dev' }}
@@ -199,7 +199,7 @@ jobs:
           submodules: recursive
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -215,13 +215,13 @@ jobs:
 
       # PyPI upload moved to release-cu130 so it is gated on test-cu130.
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: deepgemm-wheel-cuda${{ matrix.cuda-version }}-${{ matrix.arch }}
           path: DeepGEMM/dist/*.whl
 
       - name: Upload PyPI artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: deepgemm-pypi-cuda${{ matrix.cuda-version }}-${{ matrix.arch }}
           path: DeepGEMM/dist-pypi/*.whl
@@ -244,10 +244,10 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Checkout DeepGEMM
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: sgl-project/DeepGEMM
           ref: ${{ inputs.branch || 'dev' }}
@@ -255,7 +255,7 @@ jobs:
           submodules: recursive
 
       - name: Download wheel
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: dist/
           merge-multiple: true
@@ -282,17 +282,17 @@ jobs:
     needs: [build-cu130-matrix, test-cu130]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: dist/
           merge-multiple: true
           pattern: deepgemm-wheel-cuda13.0-*
 
       - name: Download PyPI artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: dist-pypi/
           merge-multiple: true
@@ -304,7 +304,7 @@ jobs:
           python3 -m twine upload --skip-existing dist-pypi/* -u __token__ -p ${{ secrets.SGL_DEEP_GEMM_PYPI_TOKEN }}
 
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
         with:
           tag_name: v${{ inputs.version }}
           repository: sgl-project/whl

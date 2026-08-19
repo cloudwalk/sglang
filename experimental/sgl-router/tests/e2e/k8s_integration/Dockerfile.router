@@ -3,7 +3,7 @@
 # Context root: repo root (one level above experimental/sgl-router/).
 
 # Matches rust-toolchain.toml's pinned channel, avoiding an in-build rustup channel-sync.
-FROM rust:1.90-bookworm AS builder
+FROM rust:1.90.0-bookworm@sha256:3914072ca0c3b8aad871db9169a651ccfce30cf58303e5d6f2db16d1d8a7e58f AS builder
 
 # Pin to the exact toolchain pre-installed in the base image so rustup
 # doesn't try to sync the channel manifest when it sees rust-toolchain.toml's
@@ -24,7 +24,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
     && cargo build --release --bin sgl-router \
     && cp target/release/sgl-router /usr/local/bin/sgl-router
 
-FROM debian:bookworm-slim
+FROM debian:13.6-slim@sha256:3a39a0592364683e6bab97937b72cad5a8fa6dcbbee90edb3bb48c7f8e94f258
 
 RUN apt-get update && apt-get install -y ca-certificates \
     && rm -rf /var/lib/apt/lists/*

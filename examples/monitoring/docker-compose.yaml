@@ -1,7 +1,7 @@
 version: '3'
 services:
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.14.0@sha256:5ce7540c3c00ef4ab0c9d2c995c6a5b9c421f44b4a115d97a2c7af3b1c21cbb0
     container_name: prometheus
     network_mode: host
     volumes:
@@ -11,7 +11,7 @@ services:
       - '--storage.tsdb.path=/prometheus'
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:13.2.0-ubuntu@sha256:2f6f8ae789c142f0ee00d355cbd9a00bf3149ae255876c3caa8b08ee74fc8791
     container_name: grafana
     network_mode: host
     volumes:

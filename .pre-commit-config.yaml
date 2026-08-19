@@ -3,7 +3,7 @@ exclude: ^(python/sglang/multimodal_gen/csrc|python/sglang/jit_kernel/flash_atte
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c
     hooks:
       - id: check-symlinks
       - id: destroyed-symlinks
@@ -26,12 +26,12 @@ repos:
       - id: debug-statements
       - id: no-commit-to-branch
   - repo: https://github.com/PyCQA/isort
-    rev: 7.0.0
+    rev: 0a09c783808cfe77bb3269250f663ff733d23302
     hooks:
       - id: isort
         exclude: '^python/sglang/srt/grpc/.*_pb2\.py$|^python/sglang/srt/grpc/.*_pb2_grpc\.py$|^python/sglang/srt/grpc/.*_pb2\.pyi$|^python/sglang/srt/grpc/.*_pb2_grpc\.pyi$'
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.1
+    rev: 65dbdb59d2f2d9c3bdc343c566821ad3319ddaa3
     hooks:
       - id: ruff
         args:
@@ -48,23 +48,23 @@ repos:
           python/sglang/srt/grpc/.*_pb2_grpc\.pyi$|
           )$
   - repo: https://github.com/psf/black
-    rev: 26.1.0
+    rev: 87928e6d6761a4a6d22250e1fee5601b3998086e
     hooks:
       - id: black-jupyter
         exclude: '^python/sglang/srt/grpc/.*_pb2\.py$|^python/sglang/srt/grpc/.*_pb2_grpc\.py$|^python/sglang/srt/grpc/.*_pb2\.pyi$|^python/sglang/srt/grpc/.*_pb2_grpc\.pyi$'
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.1
+    rev: 57b21406f092110c18776e39b0bda50d37c945c8
     hooks:
       - id: codespell
         args: ['--config', '.codespellrc']
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v20.1.7
+    rev: 182152eb8c5ce1cf5299b956b04392c86bd8a126
     hooks:
     - id: clang-format
       types_or: [c++, cuda]
       args: [--style=file, --verbose]
   - repo: https://github.com/kynan/nbstripout
-    rev: 0.9.0
+    rev: 34071b78c181af3bf5af955c1426466e096fc3db
     hooks:
       - id: nbstripout
         args:
@@ -125,7 +125,7 @@ repos:
         files: ^experimental/sgl-router/.*\.rs$
         pass_filenames: false
   - repo: https://github.com/lycheeverse/lychee.git
-    rev: lychee-v0.22.0
+    rev: 0a54079d01ba9a4ff9850d8e46d3ba64743d2c8d
     hooks:
       - id: lychee
         name: check doc links (offline)

@@ -9,7 +9,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0
 
@@ -37,7 +37,7 @@ jobs:
             | xargs -0 python3 scripts/ci/check_no_docs_changes.py
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c
         with:
           python-version: "3.12"
 
@@ -55,7 +55,7 @@ jobs:
           args: --config .github/linters/lychee.toml README.md "docs/**/*.md" "docs/**/*.rst" "docs/**/*.ipynb"
 
       - name: Run sgl-kernel clang-format checks
-        uses: DoozyX/clang-format-lint-action@v0.20
+        uses: DoozyX/clang-format-lint-action@bcb4eb2cb0d707ee4f3e5cc3b456eb075f12cf73
         with:
           source: sgl-kernel
           extensions: h,c,cpp,hpp,cu,cuh,cc

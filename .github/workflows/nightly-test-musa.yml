@@ -59,7 +59,7 @@ jobs:
 
       - name: Checkout code
         if: steps.gate.outputs.run_job == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         timeout-minutes: 10
         with:
           ref: ${{ inputs.ref || github.ref }}
@@ -107,7 +107,7 @@ jobs:
       - name: Checkout code
         timeout-minutes: 10
         if: steps.gate.outputs.run_job == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.ref }}
 
@@ -150,7 +150,7 @@ jobs:
       - name: Checkout code
         timeout-minutes: 10
         if: steps.gate.outputs.run_job == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.ref }}
 
@@ -202,7 +202,7 @@ jobs:
       - name: Checkout code
         timeout-minutes: 10
         if: steps.gate.outputs.run_job == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.ref }}
 
@@ -251,7 +251,7 @@ jobs:
       - name: Checkout code
         timeout-minutes: 10
         if: steps.gate.outputs.run_job == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.ref }}
 

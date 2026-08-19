@@ -31,7 +31,7 @@ jobs:
       main_package: ${{ steps.filter.outputs.main_package || steps.run-mode.outputs.run_all_tests }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.ref }}
 
@@ -49,7 +49,7 @@ jobs:
           fi
       - name: Detect file changes
         id: filter
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@0e4a8c6effa4802afeda77dc8d303f8176d7dfad
         if: steps.run-mode.outputs.run_all_tests != 'true'
         with:
           filters: |
@@ -87,7 +87,7 @@ jobs:
             chown -R "$(id -u):$(id -g)" /w || true
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0
           ref: ${{ inputs.ref || github.ref }}
@@ -163,7 +163,7 @@ jobs:
             chown -R "$(id -u):$(id -g)" /w || true
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0
           ref: ${{ inputs.ref || github.ref }}

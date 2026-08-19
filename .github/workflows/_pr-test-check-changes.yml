@@ -52,7 +52,7 @@ jobs:
       continue_on_error: ${{ steps.set-continue-on-error.outputs.continue_on_error }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.git_ref || github.sha }}
 
@@ -73,7 +73,7 @@ jobs:
 
       - name: Detect file changes
         id: filter
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@0e4a8c6effa4802afeda77dc8d303f8176d7dfad
         if: steps.run-mode.outputs.run_all_tests != 'true'
         with:
           filters: |

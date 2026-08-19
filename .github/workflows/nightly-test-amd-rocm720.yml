@@ -144,7 +144,7 @@ jobs:
     runs-on: linux-mi325-1gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -174,7 +174,7 @@ jobs:
     runs-on: linux-mi325-1gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -204,7 +204,7 @@ jobs:
     runs-on: linux-mi35x-gpu-1
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -239,7 +239,7 @@ jobs:
     runs-on: linux-mi325-2gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -269,7 +269,7 @@ jobs:
     runs-on: linux-mi35x-gpu-2
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -303,7 +303,7 @@ jobs:
     runs-on: linux-mi35x-gpu-2
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -337,7 +337,7 @@ jobs:
     runs-on: linux-mi325-2gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -368,7 +368,7 @@ jobs:
     runs-on: linux-mi325-2gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -400,7 +400,7 @@ jobs:
     runs-on: linux-mi325-2gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -432,7 +432,7 @@ jobs:
     runs-on: linux-mi325-4gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -468,7 +468,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -509,7 +509,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -547,7 +547,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -592,7 +592,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -644,7 +644,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -689,7 +689,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -741,7 +741,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -786,7 +786,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -829,7 +829,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -872,7 +872,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -908,7 +908,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -943,7 +943,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -978,7 +978,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1013,7 +1013,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1052,7 +1052,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1098,7 +1098,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1132,7 +1132,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1178,7 +1178,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1224,7 +1224,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1262,7 +1262,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1310,7 +1310,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1358,7 +1358,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1410,7 +1410,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1442,7 +1442,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1481,7 +1481,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1513,7 +1513,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1552,7 +1552,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1598,7 +1598,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1649,7 +1649,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1694,7 +1694,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1743,7 +1743,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1794,7 +1794,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1832,7 +1832,7 @@ jobs:
     runs-on: linux-mi325-8gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1881,7 +1881,7 @@ jobs:
     runs-on: linux-mi325-1gpu-sglang
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.sha }}
 
@@ -1910,7 +1910,7 @@ jobs:
 
       - name: Upload generated images
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: zimage-turbo-outputs-rocm720
           path: diffusion-artifacts/

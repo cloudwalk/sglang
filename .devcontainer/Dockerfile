@@ -1,4 +1,4 @@
-FROM lmsysorg/sglang:dev
+FROM lmsysorg/sglang:v0.5.17@sha256:16aba8925507e631e1dc1e23d95d026533602591775f6a8db68b74ee99746155
 
 # Create non-root user with specified UID and GID
 # NOTE: Replace with your own UID and GID. This is a workaround from https://github.com/microsoft/vscode-remote-release/issues/49#issuecomment-489060908.

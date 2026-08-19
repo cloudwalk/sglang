@@ -45,7 +45,7 @@ jobs:
     runs-on: 1-gpu-h100
     timeout-minutes: 240
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.git_ref || github.sha }}
 
@@ -61,7 +61,7 @@ jobs:
 
       - name: Download artifacts
         if: inputs.sgl_kernel == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: sgl-kernel/dist/
           merge-multiple: true
@@ -85,7 +85,7 @@ jobs:
     runs-on: 8-gpu-h200
     timeout-minutes: 240
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.git_ref || github.sha }}
 
@@ -99,7 +99,7 @@ jobs:
 
       - name: Download artifacts
         if: inputs.sgl_kernel == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: sgl-kernel/dist/
           merge-multiple: true
@@ -123,7 +123,7 @@ jobs:
     runs-on: 1-gpu-h100
     timeout-minutes: 240
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.git_ref || github.sha }}
 
@@ -139,7 +139,7 @@ jobs:
 
       - name: Download artifacts
         if: inputs.sgl_kernel == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: sgl-kernel/dist/
           merge-multiple: true
@@ -163,7 +163,7 @@ jobs:
     runs-on: ${{ fromJson(inputs.runs_on_map)[inputs.runner_config] }}
     timeout-minutes: 240
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.git_ref || github.sha }}
 
@@ -179,7 +179,7 @@ jobs:
 
       - name: Download artifacts
         if: inputs.sgl_kernel == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: sgl-kernel/dist/
           merge-multiple: true

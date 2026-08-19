@@ -52,12 +52,12 @@ jobs:
       plan-2npu: ${{ steps.compute.outputs.plan-2npu }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.ref }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.10'
 
@@ -87,7 +87,7 @@ jobs:
       image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:9.0.0-a3-ubuntu22.04-py3.11
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Mark repository safe
         run: |
@@ -129,7 +129,7 @@ jobs:
             ${{ inputs.case_ids != '' && format('--case-ids {0}', inputs.case_ids) || '' }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: ${{ env.OUTPUT_NAME }}-1npu-part${{ matrix.part }}
           path: python/${{ env.OUTPUT_NAME }}
@@ -157,7 +157,7 @@ jobs:
       image: swr.cn-southwest-2.myhuaweicloud.com/base_image/ascend-ci/cann:9.0.0-a3-ubuntu22.04-py3.11
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Mark repository safe
         run: |
@@ -199,7 +199,7 @@ jobs:
             ${{ inputs.case_ids != '' && format('--case-ids {0}', inputs.case_ids) || '' }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: ${{ env.OUTPUT_NAME }}-2npu-part${{ matrix.part }}
           path: python/${{ env.OUTPUT_NAME }}

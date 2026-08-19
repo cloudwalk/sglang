@@ -144,7 +144,7 @@ jobs:
       continue_on_error: ${{ steps.set-continue-on-error.outputs.continue_on_error }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -182,7 +182,7 @@ jobs:
 
       - name: Detect file changes
         id: filter
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@0e4a8c6effa4802afeda77dc8d303f8176d7dfad
         # On pull_request only the dsv4 jobs run; skip change detection on PRs so the
         # per-stage outputs stay 'false' and the existing test jobs are gated off.
         if: steps.run-mode.outputs.run_all_tests != 'true' && github.event_name != 'pull_request'
@@ -252,7 +252,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -298,7 +298,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -339,7 +339,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -377,7 +377,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -417,7 +417,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -455,7 +455,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -493,7 +493,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -532,7 +532,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -571,7 +571,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -610,7 +610,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -619,7 +619,7 @@ jobs:
 
       - name: Download artifacts
         if: needs.check-changes.outputs.sgl_kernel == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: sgl-kernel/dist/
           merge-multiple: true
@@ -723,7 +723,7 @@ jobs:
 
       - name: Upload diffusion failure artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: diffusion-failures-amd-rocm720-1gpu-${{ matrix.part }}-${{ github.run_attempt }}
           path: diffusion-failures/
@@ -750,7 +750,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -759,7 +759,7 @@ jobs:
 
       - name: Download artifacts
         if: needs.check-changes.outputs.sgl_kernel == 'true'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: sgl-kernel/dist/
           merge-multiple: true
@@ -861,7 +861,7 @@ jobs:
 
       - name: Upload diffusion failure artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: diffusion-failures-amd-rocm720-2gpu-${{ matrix.part }}-${{ github.run_attempt }}
           path: diffusion-failures/
@@ -889,7 +889,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -947,7 +947,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -992,7 +992,7 @@ jobs:
     runs-on: ${{matrix.runner}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -1033,7 +1033,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -1147,7 +1147,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 
@@ -1197,7 +1197,7 @@ jobs:
     runs-on: linux-mi35x-gpu-8
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.pr_head_sha || inputs.ref || github.sha }}
 

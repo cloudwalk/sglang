@@ -34,13 +34,13 @@ jobs:
             sh -c 'rm -rf /workspace/..?* /workspace/.[!.]* /workspace/*' || true
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0  # Required for setuptools-scm to determine version from tags
           submodules: "recursive"
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -50,7 +50,7 @@ jobs:
         run: sudo bash scripts/ci/utils/install_protoc.sh
 
       - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
 
       - name: Build wheel
         env:
@@ -82,7 +82,7 @@ jobs:
           mv dist-repaired/*.whl dist/
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: wheel-py${{ matrix.python-version }}-${{ matrix.arch }}
           path: python/dist/*.whl
@@ -94,7 +94,7 @@ jobs:
     environment: "prod"
     steps:
       - name: Download all wheels
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           path: dist/
           merge-multiple: true
@@ -104,7 +104,7 @@ jobs:
         run: ls -lh dist/
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.10"
 

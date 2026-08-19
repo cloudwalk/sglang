@@ -44,7 +44,7 @@ jobs:
       sgl_kernel: ${{ steps.filter.outputs.sgl_kernel == 'true' || steps.run-mode.outputs.run_all_tests == 'true' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.ref }}
 
@@ -63,7 +63,7 @@ jobs:
 
       - name: Detect file changes
         id: filter
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@0e4a8c6effa4802afeda77dc8d303f8176d7dfad
         if: steps.run-mode.outputs.run_all_tests != 'true'
         with:
           filters: |
@@ -112,7 +112,7 @@ jobs:
     steps:
       - name: Checkout code
         timeout-minutes: 10
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.ref }}
 
@@ -147,7 +147,7 @@ jobs:
     steps:
       - name: Checkout code
         timeout-minutes: 10
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.ref }}
 
@@ -180,7 +180,7 @@ jobs:
     steps:
       - name: Checkout code
         timeout-minutes: 10
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Install dependencies
         timeout-minutes: 15
@@ -205,7 +205,7 @@ jobs:
     steps:
       - name: Checkout code
         timeout-minutes: 10
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ inputs.ref || github.ref }}
 

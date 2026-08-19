@@ -72,7 +72,7 @@ jobs:
           echo "Commenter ${{ github.event.comment.user.login }} permission: $PERM"
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           # For non-fork PRs: checkout PR branch by name
           # For fork PRs with trusted commenter: checkout via refs/pull/N/head
@@ -80,7 +80,7 @@ jobs:
           ref: ${{ steps.pr.outputs.is_fork == 'false' && steps.pr.outputs.ref || (steps.perm.outputs.safe_to_checkout_pr == 'true' && steps.pr.outputs.pr_ref || '') }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.10'
 
