@@ -186,12 +186,12 @@ impl PyBridge {
         let result = Python::attach(|py| -> PyResult<()> {
             let py_req_dict = json_map_to_pydict(py, &req_dict)?;
             let callback = self.make_chunk_callback(py, rid_owned)?;
-        
+
             let kwargs = PyDict::new(py);
             kwargs.set_item("req_type", req_type)?;
             kwargs.set_item("req_dict", py_req_dict)?;
             kwargs.set_item("chunk_callback", callback)?;
-        
+
             self.runtime_handle
                 .call_method(py, "submit_request", (), Some(&kwargs))?;
             Ok(())
