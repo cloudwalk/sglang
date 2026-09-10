@@ -53,10 +53,10 @@ struct TokenizerInfo {
 /// fall back to Python tokenization.
 fn try_get_attr(
     py: Python<'_>,
-    obj: &PyObject,
+    obj: &Py<PyAny>,
     attr: &'static str,
     context: &'static str,
-) -> Option<PyObject> {
+) -> Option<Py<PyAny>> {
     obj.getattr(py, attr).map(Some).unwrap_or_else(|err| {
         tracing::debug!("{}.{} is unavailable: {}", context, attr, err);
         None
@@ -65,7 +65,7 @@ fn try_get_attr(
 
 fn try_get_attr_str(
     py: Python<'_>,
-    obj: &PyObject,
+    obj: &Py<PyAny>,
     attr: &'static str,
     context: &'static str,
 ) -> Option<String> {
@@ -79,7 +79,7 @@ fn try_get_attr_str(
 
 fn try_get_attr_i32(
     py: Python<'_>,
-    obj: &PyObject,
+    obj: &Py<PyAny>,
     attr: &'static str,
     context: &'static str,
 ) -> Option<i32> {
@@ -91,8 +91,8 @@ fn try_get_attr_i32(
     })
 }
 
-fn extract_tokenizer_info(runtime_handle: &PyObject) -> PyResult<TokenizerInfo> {
-    Python::with_gil(|py| {
+fn extract_tokenizer_info(runtime_handle: &Py<PyAny>) -> PyResult<TokenizerInfo> {
+    Python::attach(|py| {
         let tm = runtime_handle
             .getattr(py, "tokenizer_manager")
             .map_err(|err| {
@@ -101,9 +101,9 @@ fn extract_tokenizer_info(runtime_handle: &PyObject) -> PyResult<TokenizerInfo> 
                     err
                 ))
             })?;
-
+    
         let server_args = try_get_attr(py, &tm, "server_args", "tokenizer_manager");
-
+    
         let tokenizer_path = server_args
             .as_ref()
             .and_then(|args| try_get_attr_str(py, args, "tokenizer_path", "server_args"))
@@ -116,11 +116,11 @@ fn extract_tokenizer_info(runtime_handle: &PyObject) -> PyResult<TokenizerInfo> 
         if tokenizer_path.is_none() {
             tracing::warn!("Could not extract tokenizer path; Rust tokenizer disabled");
         }
-
+    
         let tokenizer_mode = server_args
             .as_ref()
             .and_then(|args| try_get_attr_str(py, args, "tokenizer_mode", "server_args"));
-
+    
         let context_len = try_get_attr(py, &tm, "model_config", "tokenizer_manager")
             .and_then(|model_config| {
                 try_get_attr_i32(py, &model_config, "context_len", "model_config")
@@ -129,7 +129,7 @@ fn extract_tokenizer_info(runtime_handle: &PyObject) -> PyResult<TokenizerInfo> 
                 tracing::warn!("Could not extract model_config.context_len; defaulting to 0");
                 0
             });
-
+    
         Ok(TokenizerInfo {
             tokenizer_path,
             tokenizer_mode,
@@ -152,7 +152,7 @@ fn extract_tokenizer_info(runtime_handle: &PyObject) -> PyResult<TokenizerInfo> 
 fn start_server(
     host: String,
     port: u16,
-    runtime_handle: PyObject,
+    runtime_handle: Py<PyAny>,
     worker_threads: usize,
     response_channel_capacity: usize,
     response_timeout_secs: u64,
