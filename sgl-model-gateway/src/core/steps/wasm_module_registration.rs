@@ -402,9 +402,9 @@ impl StepExecutor<WasmRegistrationWorkflowData> for ValidateWasmComponentStep {
             context.data.config.descriptor.name
         );
 
-        // Create a temporary engine to validate the component
         let mut config = Config::new();
-        config.async_support(true);
+        // wasmtime 45+ enables async via the `async` crate feature; Config::async_support
+        // is a deprecated no-op (see smg-wasm 1.1.4 runtime).
         config.wasm_component_model(true);
 
         let engine = Engine::new(&config).map_err(|e| WorkflowError::StepFailed {
@@ -501,7 +501,7 @@ impl StepExecutor<WasmRegistrationWorkflowData> for RegisterModuleStep {
                 last_accessed_at: now,
                 access_count: 0,
                 attach_points: descriptor.attach_points.clone(),
-                wasm_bytes,
+                wasm_bytes: wasm_bytes.into(),
             },
         };
 
